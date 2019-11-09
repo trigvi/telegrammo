@@ -12,6 +12,13 @@ I created it because Telegram only allows the creation of 20 bots, but I needed 
 
 * Open Telegram, start a conversation with http://t.me/BotFather, create your main Telegram bot, note down its token.
 
+* Also, while in the BotFather chat, set details for your new bot by using `/setdescription`, `/setabouttext`. Also use `/setcommands` to set the following commands for your new bot:
+    ```
+    subscribe - Subscribe to a sub-bot
+    unsubscribe - Unsubscribe from a sub-bot
+    subscriptions - View sub-bots you subscribed to
+    ```
+
 * Create a Postgres db.
 
 * Clone Git repository, get into repo directory.
@@ -115,7 +122,7 @@ curl -i   --header "Content-Type: application/json"   --request POST  https://ap
 
 # Telegram user interactions with our sub-bots
 
-Supported interactions by our API are two: subscribing and unsubscribing to a sub-bot.
+Our sub-bots support two actions: subscribing and unsubscribing to a sub-bot.
 
 Typically, a user on the Telegram app should:
 

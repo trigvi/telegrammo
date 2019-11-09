@@ -35,7 +35,16 @@ if (process.argv.indexOf("--noauth") != -1) {
 
 
 // DB: synchronise models
-db.sync();
+db.sync().then(
+    function(good) {
+        if (good !== true) {
+            process.exit();
+        }
+    },
+    function(err) {
+        process.exit();
+    }
+);
 
 
 // API: start
