@@ -1,24 +1,26 @@
 
-Developed with Node.js 10 and Express.js 4.16.
+*Developed with Node.js 10 and Express.js 4.16.*
 
-This application is an API with endpoints for creating sub-bots for a main Telegram bot, managing subscribers and sending them messages.
+This application is an API with endpoints for creating and managing sub-bots for a main Telegram bot and sending messages to sub-bot subscribers.
 
-I created this API because Telegram only allows the creation of 20 bots, but I needed a lot more to send tailored messages to different users of a betting signals project.
+I created it because Telegram only allows the creation of 20 bots, but I needed way more to send tailored messages to different users of a betting signals project.
 
 &nbsp;
 &nbsp;
 
 # Setup
 
-* Open Telegram, start a conversation with `@BotFather`, create your main Telegram bot, note down its token.
+* Open Telegram, start a conversation with http://t.me/BotFather, create your main Telegram bot, note down its token.
 
 * Create a Postgres db.
 
 * Clone Git repository, get into repo directory.
 
+* Install dependencies: `npm install`
+
 * Copy `mysettings.template.json` to `mysettings.json`
 
-* Open `mysettings.json` and customise: db settings (`database`), main Telegram bot details (`telegramBotsAllowed`), authorisation token(s) for this API (`api.tokens`).
+* Open `mysettings.json` and customise: db settings (`database`), main Telegram bot(s) (`telegramBotsAllowed`), authorisation token(s) for this API (`api.tokens`).
 
 * Set `app.sh` as executable:
     ```
@@ -27,39 +29,44 @@ I created this API because Telegram only allows the creation of 20 bots, but I n
 
 * Set file permissions:
     ```
-    sudo chmod 755 -R /path/to/app/*
+    sudo chmod 755 -R /path/to/app
     sudo chmod 777 -R /path/to/app/database
     sudo chmod 777 -R /path/to/app/logs
     ```
 
 * The `database` folder is simply used to periodically dump the Postgres db (see crontab below).
 
-* Setup cron schedule, replacing `<PORT>` and `/path/to/app` accordingly. The following would launch our app with `app.sh` every minute, which is a bash script that in turn launches the node app if not already running. This ensures that the app re-starts again shortly if it crashes.
+* Setup cron schedule, replacing `<PORT>` and `/path/to/app` accordingly. The following would launch our app with `app.sh` every minute, which is a bash script that in turn launches the node app if not already running. This ensures that the app re-starts again automatically if it crashes.
     ```
     0 * * * * pg_dump telegrammo > /path/to/app/database/postgres_backup.bak
-    * * * * cd /path/to/app; ./app.sh --port=8083 >> ./logs/telegrammo.log
+    * * * * cd /path/to/app; ./app.sh --port=<PORT> >> ./logs/telegrammo.log
     ```
 
-* Create nginx website configuration, proxying your domain name to (for example) `http://127.0.0.1:8083`.
+* Create nginx website configuration, proxying your domain name to (for example) `http://127.0.0.1:<PORT>`.
 
 * When configuring your nginx website, put the following directive inside `location`:
     ```
     proxy_set_header  X-Real-IP  $remote_addr;
     ```
 
-* Make your website HTTPS-only (you could use https://certbot.eff.org/). This is very important because our API authenticates requests with a header token, so requests must be encrypted.
+* Make your website HTTPS-only (you could use https://certbot.eff.org/). This is very important because our API authenticates requests using a header token, so requests must be encrypted.
+
+&nbsp;
+&nbsp;
+
+# Security
+
+Every request made to our API (excluding `/webhook`) must include the following header with a token you defined in `mysettings.json`.
+    ```
+    Access-Token: <TOKEN>
+    ```
 
 &nbsp;
 &nbsp;
 
 # Endpoints
 
-* Every request made to our API (excluding to `/webhook`) needs to include the following header with a token you defined in `mysettings.json`.
-    ```
-    Access-Token: <TOKEN>
-    ```
-
-* Creating a new sub-bot (the API will generate a unique "subbotIdentifier" for the new sub-bot and include it in the response):
+* Create new sub-bot (the API will generate a unique `subbotIdentifier` for the new sub-bot and include it in the response):
     ```
     POST https://<YOURDOMAIN>/api/v1.0/subbot
     {
@@ -68,7 +75,7 @@ I created this API because Telegram only allows the creation of 20 bots, but I n
     }
     ```
 
-* Sending message to all Telegram users/channels who subscribed to a sub-bot:
+* Send message to all Telegram subscribers of a sub-bot:
     ```
     POST https://<YOURDOMAIN>/api/v1.0/outgoing
     {
@@ -78,7 +85,7 @@ I created this API because Telegram only allows the creation of 20 bots, but I n
     }
     ```
 
-* Deleting a sub-bot:
+* Delete a sub-bot:
     ```
     DELETE https://<YOURDOMAIN>/api/v1.0/subbot
     {
@@ -101,9 +108,9 @@ Once you created the Telegram main bot and our API is up and running, we need ou
 
 For this to happen, we must tell Telegram our API's webhook URL for our main bot. We can do so by sending Telegram a POST request:
 
-    ```
-    curl -i   --header "Content-Type: application/json"   --request POST  https://api.telegram.org/bot<TELEGRAM_MAIN_BOT_TOKEN>/setWebhook    --data '{"url":"<WEBHOOK_URL>", "allowed_updates": ["message", "channel_post"]}'
-    ```
+```
+curl -i   --header "Content-Type: application/json"   --request POST  https://api.telegram.org/bot<TELEGRAM_MAIN_BOT_TOKEN>/setWebhook    --data '{"url":"<WEBHOOK_URL>", "allowed_updates": ["message", "channel_post"]}'
+```
 
 
 # Telegram user interactions with our sub-bots

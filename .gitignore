@@ -1,6 +1,7 @@
-database/*bak
-logs/*log
-logs/*txt
+database/*
+!database/empty
+logs/*
+!logs/empty
 node_modules*
 package-lock*
 mysettings.json
