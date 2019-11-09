@@ -1,9 +1,7 @@
 
-*Developed with Node.js 10 and Express.js 4.16.*
+This application is an API with endpoints for creating and managing sub-bots for a main Telegram bot and sending messages to subscribers. I created it because Telegram only allows the creation of 20 bots, but I needed way more to send tailored messages to different users of a betting signals project.
 
-This application is an API with endpoints for creating and managing sub-bots for a main Telegram bot and sending messages to sub-bot subscribers.
-
-I created it because Telegram only allows the creation of 20 bots, but I needed way more to send tailored messages to different users of a betting signals project.
+*Developed with: Node.js 10 / Express.js 4.16*
 
 &nbsp;
 &nbsp;
@@ -12,7 +10,7 @@ I created it because Telegram only allows the creation of 20 bots, but I needed 
 
 * Open Telegram, start a conversation with http://t.me/BotFather, create your main Telegram bot, note down its token.
 
-* Also, while in the BotFather chat, set details for your new bot by using `/setdescription`, `/setabouttext`. Also use `/setcommands` to set the following commands for your new bot:
+* Also, while in the BotFather chat, set details for your new bot by using `/setdescription`, `/setabouttext`. Also use `/setcommands` and send the following text:
     ```
     subscribe - Subscribe to a sub-bot
     unsubscribe - Unsubscribe from a sub-bot
@@ -51,7 +49,7 @@ I created it because Telegram only allows the creation of 20 bots, but I needed 
 
 * Create nginx website configuration, proxying your domain name to (for example) `http://127.0.0.1:<PORT>`.
 
-* When configuring your nginx website, put the following directive inside `location`:
+* When configuring your nginx website, put the following directive inside `location`. It let's our API know the request's IP address so that it can whitelist Telegram IPs on the `/webhook` endpoint.
     ```
     proxy_set_header  X-Real-IP  $remote_addr;
     ```
@@ -61,12 +59,15 @@ I created it because Telegram only allows the creation of 20 bots, but I needed 
 &nbsp;
 &nbsp;
 
-# Security
+# Setup Telegram Webhook URL
 
-Every request made to our API (excluding `/webhook`) must include the following header with a token you defined in `mysettings.json`.
-    ```
-    Access-Token: <TOKEN>
-    ```
+Once our API is up and running, we need it to receive notifications from Telegram whenever a user interacts with our main bot, for example to subscribe to a sub-bot.
+
+For this to happen, we must tell Telegram our API's webhook URL (see the Endpoints section below), by sending Telegram a POST request:
+
+```
+curl -i   --header "Content-Type: application/json"   --request POST  https://api.telegram.org/bot<TELEGRAM_MAIN_BOT_TOKEN>/setWebhook    --data '{"url":"<WEBHOOK_URL>", "allowed_updates": ["message", "channel_post"]}'
+```
 
 &nbsp;
 &nbsp;
@@ -109,28 +110,26 @@ Every request made to our API (excluding `/webhook`) must include the following 
 &nbsp;
 &nbsp;
 
-# Setup Telegram Webhook URL
+# Security
 
-Once you created the Telegram main bot and our API is up and running, we need our API to receive notifications from Telegram any time a user interacts with our main bot.
-
-For this to happen, we must tell Telegram our API's webhook URL for our main bot. We can do so by sending Telegram a POST request:
-
+Every request made to our API must include the following header with a token you defined in `mysettings.json`.
 ```
-curl -i   --header "Content-Type: application/json"   --request POST  https://api.telegram.org/bot<TELEGRAM_MAIN_BOT_TOKEN>/setWebhook    --data '{"url":"<WEBHOOK_URL>", "allowed_updates": ["message", "channel_post"]}'
+Access-Token: <TOKEN>
 ```
+This doesn't apply to the `/webhook` endpoint as we can't control what Telegram sends us.
 
+&nbsp;
+&nbsp;
 
-# Telegram user interactions with our sub-bots
+# Telegram Commands
 
-Our sub-bots support two actions: subscribing and unsubscribing to a sub-bot.
+Typically, a user on the Telegram app will:
 
-Typically, a user on the Telegram app should:
+* Know our Telegram main bot username (you tell him).
 
-* Know our Telegram main bot username
+* Know the sub-bot identifier (you tell him).
 
-* Know the sub-bot identifier
-
-* Start a chat with our Telegram main bot (or add it as Admin to his channel)
+* Start a chat with our Telegram main bot (or add it as an admin to his channel).
 
 * Send the following message to subscribe to a sub-bot:
     ```
@@ -147,4 +146,4 @@ Typically, a user on the Telegram app should:
     @<TELEGRAM_MAIN_BOT_USERNAME>  /subscriptions
     ```
 
-* Once he has subscribed to one of our sub-bots, he will receive a message whenever we hit our API endpoint to send a message to all subscribers of that sub-bot.
+* Once he has subscribed to one of our sub-bots, he will receive all messages we send to that sub-bot's subscribers through our API.
