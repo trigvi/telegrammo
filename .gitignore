@@ -1,0 +1,6 @@
+database/*bak
+logs/*log
+logs/*txt
+node_modules*
+package-lock*
+mysettings.json

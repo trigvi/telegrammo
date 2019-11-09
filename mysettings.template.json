@@ -1,0 +1,13 @@
+{
+    "api": {
+        "tokens": [
+            "some_value"
+        ]
+    },
+
+    "database": "postgres://user:pwd@host/dbname",
+
+    "telegramBotsAllowed": {
+        "telegram_bot_username": "telegram_bot_token"
+    }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Telegrammo",
+  "version": "1.0.0",
+  "description": "Telegrammo",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "4.16.4",
+    "moment-timezone": "0.5.23",
+    "node-fetch": "^2.6.0",
+    "pg": "^7.11.0",
+    "request": "2.88",
+    "sequelize": "6.0.0"
+  }
+}
