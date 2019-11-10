@@ -1,9 +1,9 @@
 #!/bin/bash 
 
 # If program is not already running, start it 
-HOWMANY="$(ps aux | grep 'node app' | wc -l)" 
+HOWMANY="$(ps aux | grep 'node app.js' | wc -l)" 
 if [ "$HOWMANY" -lt 2 ] 
 then 
     cd $PWD 
-    node app "$@"
+    node app.js "$@"
 fi
