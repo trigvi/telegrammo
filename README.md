@@ -1,5 +1,13 @@
 
-This application is an API with endpoints for creating and managing sub-bots for a main Telegram bot and sending messages to subscribers. I created it because Telegram only allows the creation of 20 bots, but I needed way more to send tailored messages to different users of a betting signals project.
+This application is an API for creating and managing sub-bots for a main Telegram bot. Here's how it works:
+
+* You create a main bot directly on the Telegram app.
+* Add the main bot settings to this application.
+* Tell Telegram the webhook URL for your main bot (it's an endpoint of this API).
+* Use this API to define sub-bots.
+* Telegram users can subscribe to a sub-bot.
+* Sub-bots (and their subscribers) get stored in this application's database.
+* Use this API to send messages to all subscribers of a sub-bot.
 
 *Developed with: Node.js 10 / Express.js 4.16*
 
@@ -27,16 +35,12 @@ This application is an API with endpoints for creating and managing sub-bots for
 
 * Open `mysettings.json` and customise: db settings (`database`), main Telegram bot(s) (`telegramBotsAllowed`), authorisation token(s) for this API (`api.tokens`).
 
-* Set `app.sh` as executable:
-    ```
-    chmod +x app.sh
-    ```
-
 * Set file permissions:
     ```
     sudo chmod 755 -R /path/to/app
     sudo chmod 777 -R /path/to/app/database
     sudo chmod 777 -R /path/to/app/logs
+    sudo chmod +x /path/to/app/app.sh
     ```
 
 * The `database` folder is simply used to periodically dump the Postgres db (see crontab below).
@@ -47,7 +51,7 @@ This application is an API with endpoints for creating and managing sub-bots for
     * * * * cd /path/to/app; ./app.sh --port=<PORT> >> ./logs/telegrammo.log
     ```
 
-* Create nginx website configuration, proxying your domain name to (for example) `http://127.0.0.1:<PORT>`.
+* Create nginx website configuration, proxying your domain name to `http://127.0.0.1:<PORT>`.
 
 * When configuring your nginx website, put the following directive inside `location`. It let's our API know the request's IP address so that it can whitelist Telegram IPs on the `/webhook` endpoint.
     ```
@@ -59,7 +63,7 @@ This application is an API with endpoints for creating and managing sub-bots for
 &nbsp;
 &nbsp;
 
-# Setup Telegram Webhook URL
+# Setup Telegram Webhook
 
 Once our API is up and running, we need it to receive notifications from Telegram whenever a user interacts with our main bot, for example to subscribe to a sub-bot.
 
@@ -112,11 +116,14 @@ curl -i   --header "Content-Type: application/json"   --request POST  https://ap
 
 # Security
 
-Every request made to our API must include the following header with a token you defined in `mysettings.json`.
-```
-Access-Token: <TOKEN>
-```
-This doesn't apply to the `/webhook` endpoint as we can't control what Telegram sends us.
+* Every request made to our API must include the following header.
+    ```
+    Access-Token: <TOKEN>
+    ```
+
+* You can define tokens in `mysettings.json`.
+
+* The only endpoint that doesn't require a token is `/webhook`, as we can't control what Telegram sends us.
 
 &nbsp;
 &nbsp;
