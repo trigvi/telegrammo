@@ -1,5 +1,5 @@
 
-This application is an API for creating and managing sub-bots for a main Telegram bot. Here's how it works:
+Nodejs API app for creating and managing sub-bots for a main Telegram bot. Here's how it works:
 
 * Create a main bot directly on the Telegram app.
 * Add main bot settings to this API.
@@ -45,9 +45,9 @@ This application is an API for creating and managing sub-bots for a main Telegra
 
 * The `database` folder is simply used to periodically dump the Postgres db (see crontab below).
 
-* Setup cron schedule, replacing `<PORT>` and `/path/to/app` accordingly. The following would launch `app.sh` every minute, which is a bash script that in turn launches the node app if not already running. This ensures that the app re-starts again automatically if it crashes.
+* Setup cron schedule, replacing `<DB_NAME>`, `<PORT>` and `/path/to/app` accordingly. The following would launch `app.sh` every minute, which is a bash script that in turn launches the node app if not already running. This ensures that the app re-starts again automatically if it crashes.
     ```
-    0 * * * * pg_dump telegrammo > /path/to/app/database/postgres_backup.bak
+    0 * * * * pg_dump <DB_NAME> > /path/to/app/database/postgres_backup.bak
     * * * * cd /path/to/app; ./app.sh --port=<PORT> >> ./logs/telegrammo.log
     ```
 
