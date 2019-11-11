@@ -9,7 +9,7 @@ This application is an API for creating and managing sub-bots for a main Telegra
 * Telegram users will be able to subscribe to a sub-bot.
 * Use this API to send messages to all subscribers of a sub-bot.
 
-*Developed with: Node.js 10 / Express.js 4.16*
+*Developed with: Nodejs 10, Postgres 9.6, Debian 9*
 
 &nbsp;
 &nbsp;
