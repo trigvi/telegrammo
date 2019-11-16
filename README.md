@@ -10,13 +10,13 @@ Nodejs API app for managing sub-bots of a Telegram bot.
 
 Telegram let's you only create 20 bots.
 
-This app, given one Telegram bot, let's you define infinite sub-bots in your own database. Here's how it works in a nutshell:
+This API let's you work around that, by allowing the creation and management of unlimited sub-bots for one Telegram bot. Sub-bot details and subscribers are stored in your own db. Here's how it works in a nutshell:
 
 * Create a main bot directly on the Telegram app.
 * Add main bot settings to this API's configuration file.
 * Setup and run this API.
 * Tell Telegram this API's webhook URL for your main bot.
-* Use this API to define sub-bots, it will automatically store subscribers.
+* Use this API to define sub-bots.
 * Telegram users will be able to subscribe to a sub-bot.
 * Use this API to send messages to all subscribers of a sub-bot.
 
@@ -32,6 +32,13 @@ This app, given one Telegram bot, let's you define infinite sub-bots in your own
     subscribe - Subscribe to a sub-bot
     unsubscribe - Unsubscribe from a sub-bot
     subscriptions - View sub-bots you subscribed to
+    ```
+
+* Create Postgres database `telegrammo` and user `telegrammo`:
+    ```
+    CREATE DATABASE telegrammo;
+    CREATE USER telegrammo WITH PASSWORD 'telegrammo';
+    GRANT ALL PRIVILEGES ON DATABASE "telegrammo" TO telegrammo;
     ```
 
 * Before cloning the repo, create dedicated Linux user `telegrammo`:
@@ -56,13 +63,6 @@ This app, given one Telegram bot, let's you define infinite sub-bots in your own
     chmod +x app.sh
     ```
 
-* Create Postgres database `telegrammo` and user `telegrammo`:
-    ```
-    CREATE DATABASE telegrammo;
-    CREATE USER telegrammo WITH PASSWORD 'telegrammo';
-    GRANT ALL PRIVILEGES ON DATABASE "telegrammo" TO telegrammo;
-    ```
-
 * Create settings file by copying template:
     ```
     cp mysettings.json.template mysettings.json
@@ -70,7 +70,7 @@ This app, given one Telegram bot, let's you define infinite sub-bots in your own
 
 * Open `mysettings.json` and customise accordingly. In `api.tokens` you can define valid authentication tokens for this API. In `telegramBotsAllowed` you can define your main Telegram bot(s).
 
-* Logout from `telegramo` user:
+* Logout from user `telegrammo`:
     ```
     exit
     ```
