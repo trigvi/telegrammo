@@ -8,7 +8,7 @@ Nodejs API app for managing sub-bots of a Telegram bot.
 
 # In A Nutshell
 
-It was developed because Telegram let's you only create 20 bots.
+Telegram let's you only create 20 bots.
 
 This app, given one Telegram bot, let's you define infinite sub-bots in your own database. Here's how it works in a nutshell:
 
@@ -27,47 +27,70 @@ This app, given one Telegram bot, let's you define infinite sub-bots in your own
 
 * Open Telegram, start a conversation with http://t.me/BotFather, create your main Telegram bot, note down its token.
 
-* Also, while in the BotFather chat, set details for your new bot by using `/setdescription`, `/setabouttext`. Also use `/setcommands` and send the following text:
+* While in the BotFather chat, set description (`/setdescription`) and about text (`/setabouttext`) for your new bot. Then use `/setcommands` and send the following text:
     ```
     subscribe - Subscribe to a sub-bot
     unsubscribe - Unsubscribe from a sub-bot
     subscriptions - View sub-bots you subscribed to
     ```
 
-* Create a Postgres db.
-
-* Clone Git repository, get into repo directory.
-
-* Install dependencies: `npm install`
-
-* Copy `mysettings.template.json` to `mysettings.json`
-
-* Open `mysettings.json` and customise: db settings (`database`), main Telegram bot(s) (`telegramBotsAllowed`), authorisation token(s) for this API (`api.tokens`).
-
-* Set file permissions:
+* Before cloning the repo, create dedicated Linux user `telegrammo`:
     ```
-    sudo chmod 755 -R /path/to/app
-    sudo chmod 777 -R /path/to/app/database
-    sudo chmod 777 -R /path/to/app/logs
-    sudo chmod +x /path/to/app/app.sh
+    sudo adduser --shell /bin/bash --gecos "User" --home /home/telegrammo telegrammo
     ```
 
-* The `database` folder is simply used to periodically dump the Postgres db (see crontab below).
-
-* Setup cron schedule, replacing `<DB_NAME>`, `<PORT>` and `/path/to/app` accordingly. The following would launch `app.sh` every minute, which is a bash script that in turn launches the node app if not already running. This ensures that the app re-starts again automatically if it crashes.
+* Switch to user `telegrammo` and clone this git repo:
     ```
-    0 * * * * pg_dump <DB_NAME> > /path/to/app/database/postgres_backup.bak
-    * * * * cd /path/to/app; ./app.sh --port=<PORT> >> ./logs/telegrammo.log
+    sudo su - telegrammo
+    git clone <REPO_URL> repository
     ```
 
-* Create nginx website configuration, proxying your domain name to `http://127.0.0.1:<PORT>`.
+* Install dependencies:
+    ```
+    cd repository
+    npm install
+    ```
 
-* When configuring your nginx website, put the following directive inside `location`. It let's this API know the request's IP address so that it can whitelist Telegram IPs on the `/webhook` endpoint.
+* Make application executable:
+    ```
+    chmod +x app.sh
+    ```
+
+* Create Postgres database `telegrammo` and user `telegrammo`:
+    ```
+    CREATE DATABASE telegrammo;
+    CREATE USER telegrammo WITH PASSWORD 'telegrammo';
+    GRANT ALL PRIVILEGES ON DATABASE "telegrammo" TO telegrammo;
+    ```
+
+* Create settings file by copying template:
+    ```
+    cp mysettings.json.template mysettings.json
+    ```
+
+* Open `mysettings.json` and customise accordingly. In `api.tokens` you can define valid authentication tokens for this API. In `telegramBotsAllowed` you can define your main Telegram bot(s).
+
+* Logout from `telegramo` user:
+    ```
+    exit
+    ```
+
+* Setup cron schedule. The following will make this API run on port 8083. By the way, `app.sh` gets triggered every minute and it starts the actual node app if not already running. This ensures that this API re-starts again automatically after a crash.
+    ```
+    sudo /etc/crontab
+    ```
+
+    ```
+    0 * * * *   telegrammo   pg_dump telegrammo > /home/telegrammo/repository/database/postgres_backup.bak
+    * * * * *   telegrammo   cd /home/telegrammo/repository; ./app.sh --port=8083 >> ./logs/telegrammo.log
+    ```
+
+* Create nginx website configuration, proxying your domain name to `http://127.0.0.1:8083`. When creating nginx conf file, put the following inside `location` so that this API can know the visitor's IP and whitelist Telegram's.
     ```
     proxy_set_header  X-Real-IP  $remote_addr;
     ```
 
-* Make your website HTTPS-only (you could use https://certbot.eff.org/). This is very important because this API authenticates requests using a header token, so requests must be encrypted.
+* Make your website HTTPS-only (you could use https://certbot.eff.org/). This is essential because this API authenticates requests using a header token.
 
 &nbsp;
 &nbsp;
@@ -76,7 +99,7 @@ This app, given one Telegram bot, let's you define infinite sub-bots in your own
 
 Once this API is up and running, we need it to receive notifications from Telegram whenever a user interacts with our main bot.
 
-For this to happen, we must tell Telegram this API's webhook URL for the main bot (see Endpoints section below), by sending Telegram a POST request:
+For this to happen, we must tell Telegram this API's `<WEBHOOK_URL>` for the main bot (see Endpoints section below) by sending Telegram a POST request:
 
 ```
 curl -i   --header "Content-Type: application/json"   --request POST  https://api.telegram.org/bot<TELEGRAM_MAIN_BOT_TOKEN>/setWebhook    --data '{"url":"<WEBHOOK_URL>", "allowed_updates": ["message", "channel_post"]}'
