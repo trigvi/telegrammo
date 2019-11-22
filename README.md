@@ -1,16 +1,14 @@
 
 Nodejs API app for managing sub-bots of a Telegram bot.
 
+Basically, Telegram let's you only create 20 bots. This API works around that by allowing the creation and management (on your own db) of unlimited sub-bots.
+
 *Developed with: Nodejs 10, Postgres 9.6, Debian 9*
 
 &nbsp;
 &nbsp;
 
 # In A Nutshell
-
-Telegram let's you only create 20 bots.
-
-This API let's you work around that, by allowing the creation and management of unlimited sub-bots for one Telegram bot. Sub-bot details and subscribers are stored in your own db. Here's how it works in a nutshell:
 
 * Create a main bot directly on the Telegram app.
 * Add main bot settings to this API's configuration file.
@@ -60,7 +58,7 @@ This API let's you work around that, by allowing the creation and management of 
 
 * Make application executable:
     ```
-    chmod +x app.sh
+    chmod +x telegrammo.sh
     ```
 
 * Create settings file by copying template:
@@ -75,14 +73,14 @@ This API let's you work around that, by allowing the creation and management of 
     exit
     ```
 
-* Setup cron schedule. The following will make this API run on port 8083. By the way, `app.sh` gets triggered every minute and it starts the actual node app if not already running. This ensures that this API re-starts again automatically after a crash.
+* Setup cron schedule. The following will make this API run on port 8083. By the way, `telegrammo.sh` gets triggered every minute and it starts the actual node app if not already running. This ensures that this API re-starts again automatically after a crash.
     ```
     sudo /etc/crontab
     ```
 
     ```
     0 * * * *   telegrammo   pg_dump telegrammo > /home/telegrammo/repository/database/postgres_backup.bak
-    * * * * *   telegrammo   cd /home/telegrammo/repository; ./app.sh --port=8083 >> ./logs/telegrammo.log
+    * * * * *   telegrammo   cd /home/telegrammo/repository; ./telegrammo.sh --port=8083 >> ./logs/telegrammo.log
     ```
 
 * Create nginx website configuration, proxying your domain name to `http://127.0.0.1:8083`. When creating nginx conf file, put the following inside `location` so that this API can know the visitor's IP and whitelist Telegram's.
