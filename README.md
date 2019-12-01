@@ -3,7 +3,7 @@ Nodejs API app for managing sub-bots of a Telegram bot.
 
 Basically, Telegram let's you only create 20 bots. This API works around that by allowing the creation and management (on your own db) of unlimited sub-bots.
 
-*Developed with: Nodejs 10, Postgres 9.6, Debian 9*
+*Developed with: Nodejs 10, Postgres 11, Debian 10*
 
 &nbsp;
 &nbsp;
@@ -32,7 +32,7 @@ Basically, Telegram let's you only create 20 bots. This API works around that by
     subscriptions - View sub-bots you subscribed to
     ```
 
-* Create Postgres database `telegrammo` and user `telegrammo`:
+* Create Postgres database `telegrammo` and user `telegrammo`, for example:
     ```
     CREATE DATABASE telegrammo;
     CREATE USER telegrammo WITH PASSWORD 'telegrammo';
@@ -48,11 +48,12 @@ Basically, Telegram let's you only create 20 bots. This API works around that by
     ```
     sudo su - telegrammo
     git clone <REPO_URL> repository
+    cd repository
+    git config core.filemode false
     ```
 
 * Install dependencies:
     ```
-    cd repository
     npm install
     ```
 
