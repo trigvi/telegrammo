@@ -1,7 +1,7 @@
 
 Nodejs API app for managing sub-bots of a Telegram bot.
 
-Basically, Telegram let's you only create 20 bots. This API works around that by allowing the creation and management (on your own db) of unlimited sub-bots.
+Telegram let's you only create 20 bots. This API works around that by allowing the creation and management (on your own db) of unlimited sub-bots.
 
 *Developed with: Nodejs 10, Postgres 11, Debian 10*
 
@@ -10,13 +10,15 @@ Basically, Telegram let's you only create 20 bots. This API works around that by
 
 # In A Nutshell
 
-* Create a main bot directly on the Telegram app.
-* Add main bot settings to this API's configuration file.
-* Setup and run this API.
-* Tell Telegram this API's webhook URL for your main bot.
-* Use this API to define sub-bots.
-* Telegram users will be able to subscribe to a sub-bot.
-* Use this API to send messages to all subscribers of a sub-bot.
+* You create a main bot on the Telegram app.
+* Add its unique token to this API.
+* Run this API on your server.
+* Tell Telegram the webhook URL.
+* Users can then start a chat with the main bot on Telegram.
+* Users send the main bot a "subscribe to sub-bot" message.
+* Telegram will hit the webhook URL on this API.
+* This API will add user to the sub-bot's subscriber list.
+* You can then hit this API's `/outgoing` endpoint to send a message to all subscribers of a sub-bot.
 
 &nbsp;
 &nbsp;
@@ -109,6 +111,11 @@ curl -i   --header "Content-Type: application/json"   --request POST  https://ap
 
 # Endpoints
 
+* Webhook URL to receive Telegram interactions:
+    ```
+    POST https://<YOURDOMAIN>/api/v1.0/webhook/<TELEGRAM_MAIN_BOT_USERNAME>
+    ```
+
 * Create sub-bot (the response will contain its unique `subbotIdentifier`):
     ```
     POST https://<YOURDOMAIN>/api/v1.0/subbot
@@ -130,7 +137,7 @@ curl -i   --header "Content-Type: application/json"   --request POST  https://ap
     }
     ```
 
-* Delete a sub-bot:
+* Delete sub-bot:
     ```
     DELETE https://<YOURDOMAIN>/api/v1.0/subbot
  
@@ -138,11 +145,6 @@ curl -i   --header "Content-Type: application/json"   --request POST  https://ap
         "tgBotUsername": "<TELEGRAM_MAIN_BOT_USERNAME>",
         "subbotIdentifier": "<SUBBOT_IDENTIFIER>"
     }
-    ```
-
-* Webhook URL to receive Telegram interactions:
-    ```
-    POST https://<YOURDOMAIN>/api/v1.0/webhook/<TELEGRAM_MAIN_BOT_USERNAME>
     ```
 
 &nbsp;
