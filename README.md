@@ -82,7 +82,7 @@ Telegram let's you only create 20 bots. This API works around that by allowing t
     ```
 
     ```
-    0 * * * *   telegrammo   pg_dump telegrammo > /home/telegrammo/repository/database/postgres_backup.bak
+    0 0 * * *   telegrammo   pg_dump telegrammo > /home/telegrammo/repository/database/postgres_backup.bak
     * * * * *   telegrammo   cd /home/telegrammo/repository; ./telegrammo.sh --port=8083 >> ./logs/telegrammo.log
     ```
 
