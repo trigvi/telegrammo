@@ -61,7 +61,7 @@ Telegram let's you only create 20 bots. This API works around that by allowing t
 
 * Make application executable:
     ```
-    chmod +x telegrammo.sh
+    chmod u+x telegrammo.sh
     ```
 
 * Create settings file by copying template:
