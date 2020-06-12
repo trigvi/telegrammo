@@ -1,16 +1,16 @@
 
-var bodyParser          = require("body-parser");
-var cors                = require("cors")
-let express             = require("express");
+const bodyParser          = require("body-parser");
+const cors                = require("cors")
+const express             = require("express");
 
-let cOutgoing           = require("./lib/api/controllers/outgoing");
-let cSubbot             = require("./lib/api/controllers/subbot");
-let cWebhook            = require("./lib/api/controllers/webhook");
-let db                  = require("./lib/db");
-let minilogger          = require("./lib/minilogger");
-let mAuthentication     = require("./lib/api/middleware/authentication");
-let mWebhookWhitelist   = require("./lib/api/middleware/webhook_whitelist");
-let settings            = require("./mysettings.json");
+const cOutgoing           = require("./lib/api/controllers/outgoing");
+const cSubbot             = require("./lib/api/controllers/subbot");
+const cWebhook            = require("./lib/api/controllers/webhook");
+const db                  = require("./lib/db");
+const minilogger          = require("./lib/minilogger");
+const mAuthentication     = require("./lib/api/middleware/authentication");
+const mWebhookWhitelist   = require("./lib/api/middleware/webhook_whitelist");
+const settings            = require("./mysettings.json");
 
 
 // Args: --port
