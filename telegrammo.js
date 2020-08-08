@@ -49,7 +49,10 @@ db.sync().then(
 
 
 // Kickstart background workers
-backgroundWorkers.run();
+backgroundWorkers.run().catch(function(err){
+    minilogger.print(`backgroundWorkers.run() failed // ${err.message}`);
+    process.exit();
+});
 
 
 // API: start
