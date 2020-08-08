@@ -3,6 +3,7 @@ const bodyParser          = require("body-parser");
 const cors                = require("cors")
 const express             = require("express");
 
+const backgroundWorkers   = require("./lib/background-workers");
 const cOutgoing           = require("./lib/api/controllers/outgoing");
 const cSubbot             = require("./lib/api/controllers/subbot");
 const cWebhook            = require("./lib/api/controllers/webhook");
@@ -45,6 +46,10 @@ db.sync().then(
         process.exit();
     }
 );
+
+
+// Kickstart background workers
+backgroundWorkers.run();
 
 
 // API: start
