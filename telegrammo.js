@@ -35,55 +35,48 @@ if (process.argv.indexOf("--noauth") != -1) {
 }
 
 
-// DB: synchronise models
-db.sync().then(
-    function(good) {
-        if (good !== true) {
-            process.exit();
-        }
-    },
-    function(err) {
-        process.exit();
-    }
-);
-
-
-// Kickstart background workers
-backgroundWorkers.run().catch(function(err){
-    minilogger.print(`backgroundWorkers.run() failed // ${err.message}`);
-    process.exit();
+// Start!
+start().catch(function(err) {
+    minilogger.print(`START ERROR // ${err.message}`);
 });
 
+async function start() {
 
-// API: start
-let app = express();
-app.listen(port, () => {
+    // Sync db, start background workers
     minilogger.print(``);
-    minilogger.print(`API started on port ${port}`);
-});
+    await db.sync();
+    await backgroundWorkers.run();
 
 
-// API: middleware
-app.use(cors());
-app.use(bodyParser.json());
+    // API: start
+    let api = express();
+    api.listen(port, () => {
+        minilogger.print(`API started on port ${port}`);
+    });
 
 
-// API: router middleware
-let router = express.Router();
-router.use(mWebhookWhitelist.fn);
+    // API: middleware
+    api.use(cors());
+    api.use(bodyParser.json());
 
-if (authenticationRequired) {
-    router.use(mAuthentication.fn);
+
+    // API: router middleware
+    let router = express.Router();
+    router.use(mWebhookWhitelist.fn);
+
+    if (authenticationRequired) {
+        router.use(mAuthentication.fn);
+    }
+
+
+    // API: router
+    api.use("/api/v1.0/", router);
+
+    router.get       ("/",                       (req, res, next) => { res.json({"msg":"Hello"}); });
+    router.post      ("/outgoing",               cOutgoing.post);
+    router.get       ("/subbot",                 cSubbot.getList);
+    router.post      ("/subbot",                 cSubbot.post);
+    router.delete    ("/subbot",                 cSubbot.del);
+    router.post      ("/webhook/:tgBotUsername", cWebhook.post);
+
 }
-
-
-// API: router
-app.use("/api/v1.0/", router);
-
-router.get       ("/",                       (req, res, next) => { res.json({"msg":"Hello"}); });
-router.post      ("/outgoing",               cOutgoing.post);
-router.get       ("/subbot",                 cSubbot.getList);
-router.post      ("/subbot",                 cSubbot.post);
-router.delete    ("/subbot",                 cSubbot.del);
-router.post      ("/webhook/:tgBotUsername", cWebhook.post);
-
