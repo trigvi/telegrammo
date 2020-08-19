@@ -3,7 +3,7 @@ Nodejs API app for managing sub-bots of a Telegram bot.
 
 Telegram let's you only create 20 bots. This API works around that by allowing the creation and management (on your own db) of unlimited sub-bots.
 
-*Developed with: Nodejs 10, Postgres 11, Debian 10*
+*Developed with: Nodejs 12, Postgres 11, Debian 10*
 
 &nbsp;
 &nbsp;
