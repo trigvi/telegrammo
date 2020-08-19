@@ -3,5 +3,4 @@ database/*
 logs/*
 !logs/empty
 node_modules*
-package-lock*
 mysettings.json
