@@ -96,11 +96,11 @@ Telegram let's you only create 20 bots. This API works around that by allowing t
 &nbsp;
 &nbsp;
 
-# Setup Telegram Webhook
+# Set Telegram Webhook
 
-Once this API is up and running, we need to tell Telegram its webhook url so that Telegram can hit it whenever a user interacts with our bots.
+Once this API is up and running, we need to tell Telegram this API's webhook url so that Telegram can send notifications when users interact with our bots.
 
-To tell Telegramo the webhook url, send a POST request to this API's `/webhook-set` endpoint as shown below.
+To do so, send a POST request to this API's `/webhook-set` endpoint as shown below.
 
 &nbsp;
 &nbsp;
@@ -109,7 +109,7 @@ To tell Telegramo the webhook url, send a POST request to this API's `/webhook-s
 
 * Tell Telegram our webhook url for a main bot:
     ```
-    POST https://<YOURDOMAIN>/api/v1.0/subbot
+    POST https://<YOURDOMAIN>/api/v1.0/webhook-set
  
     {
         "tgBotUsername": "<TELEGRAM_MAIN_BOT_USERNAME>"
