@@ -1,5 +1,7 @@
 {
     "api": {
+        "base_url": "https://SOME_HOST/api/v1.0",
+        "base_uri": "/api/v1.0",
         "tokens": [
             "some_value"
         ]

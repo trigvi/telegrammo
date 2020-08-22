@@ -70,13 +70,14 @@ async function start() {
 
 
     // API: router
-    api.use("/api/v1.0/", router);
+    api.use(settings["api"]["base_uri"], router);
 
-    router.get       ("/",                       (req, res, next) => { res.json({"msg":"Hello"}); });
-    router.post      ("/outgoing",               cOutgoing.post);
-    router.get       ("/subbot",                 cSubbot.getList);
-    router.post      ("/subbot",                 cSubbot.post);
-    router.delete    ("/subbot",                 cSubbot.del);
-    router.post      ("/webhook/:tgBotUsername", cWebhook.post);
+    router.get       ("/",                          (req, res, next) => { res.json({"msg":"Hello"}); });
+    router.post      ("/outgoing",                  cOutgoing.post);
+    router.get       ("/subbot",                    cSubbot.getList);
+    router.post      ("/subbot",                    cSubbot.post);
+    router.delete    ("/subbot",                    cSubbot.del);
+    router.post      ("/webhook-set",               cWebhook.postWebhookSet);
+    router.post      ("/webhook/:tgBotUsername",    cWebhook.postWebhook);
 
 }
