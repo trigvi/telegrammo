@@ -76,17 +76,17 @@ Telegram let's you only create 20 bots. This API works around that by allowing t
     exit
     ```
 
-* Setup cron schedule. The following will make this API run on port 8083. By the way, `telegrammo.sh` gets triggered every minute and it starts the actual node app if not already running. This ensures that this API re-starts again automatically after a crash.
+* Setup cron schedule. The following will make this API run on port 50002. By the way, `telegrammo.sh` gets triggered every minute and it starts the actual node app if not already running. This ensures that this API re-starts again automatically after a crash.
     ```
     sudo /etc/crontab
     ```
 
     ```
     0 0 * * *   telegrammo   pg_dump telegrammo > /home/telegrammo/repository/database/postgres_backup.bak
-    * * * * *   telegrammo   cd /home/telegrammo/repository; ./telegrammo.sh --port=8083 >> ./logs/telegrammo.log
+    * * * * *   telegrammo   cd /home/telegrammo/repository; ./telegrammo.sh --port=50002 >> ./logs/telegrammo.log
     ```
 
-* Create nginx website configuration, proxying your domain name to `http://127.0.0.1:8083`. When creating nginx conf file, put the following inside `location` so that this API can know the visitor's IP and whitelist Telegram's.
+* Create nginx website configuration, proxying your domain name to `http://127.0.0.1:50002`. When creating nginx conf file, put the following inside `location` so that this API can know the visitor's IP and whitelist Telegram's.
     ```
     proxy_set_header  X-Real-IP  $remote_addr;
     ```
