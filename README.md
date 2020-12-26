@@ -1,7 +1,7 @@
 
-Nodejs API app for managing sub-bots of a Telegram bot.
+Telegram let's you only create 20 bots.
 
-Telegram let's you only create 20 bots. This API works around that by allowing the creation and management (on your own db) of unlimited sub-bots.
+This Nodejs API, hosted on your server, allows the creation and management (in your db) of unlimited sub-bots.
 
 *Developed with: Nodejs 12, Postgres 11, Debian 10*
 
@@ -10,15 +10,15 @@ Telegram let's you only create 20 bots. This API works around that by allowing t
 
 # In A Nutshell
 
-* You create a main bot on the Telegram app.
-* Add its unique token to this API.
+* Create main bot on the Telegram app.
+* Add main bot token to this API's config.
 * Run this API on your server.
-* Tell Telegram the webhook URL.
-* Users can then start a chat with the main bot on Telegram.
-* Users send the main bot a "subscribe to sub-bot" message.
-* Telegram will hit the webhook URL on this API.
-* This API will add user to the sub-bot's subscriber list.
-* You can then hit this API's `/outgoing` endpoint to send a message to all subscribers of a sub-bot.
+* Tell Telegram the webhook URL for the main bot.
+* Users starts a chat with the main bot on Telegram.
+* Users sends the main bot a "subscribe to sub-bot" message.
+* Telegram hits the webhook URL on this API when the above happens.
+* This API keeps track of which users subscribed to which sub-bot.
+* Hit this API's `/outgoing` endpoint to send a message to all subscribers of a sub-bot.
 
 &nbsp;
 &nbsp;
