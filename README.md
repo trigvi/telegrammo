@@ -14,10 +14,10 @@ This Nodejs API, hosted on your server, allows the creation and management (in y
 * Add main bot token to this API's config.
 * Run this API on your server.
 * Tell Telegram the webhook URL for the main bot.
-* Users starts a chat with the main bot on Telegram.
-* Users sends the main bot a "subscribe to sub-bot" message.
-* Telegram hits the webhook URL on this API when the above happens.
-* This API keeps track of which users subscribed to which sub-bot.
+* User starts a chat with the main bot on Telegram.
+* User sends the main bot a "subscribe to sub-bot" message.
+* Telegram hits webhook URL on this API when the above happens.
+* This API then keeps track of which users subscribed to which sub-bot.
 * Hit this API's `/outgoing` endpoint to send a message to all subscribers of a sub-bot.
 
 &nbsp;
