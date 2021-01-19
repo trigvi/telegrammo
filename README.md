@@ -56,7 +56,7 @@ This Nodejs API, hosted on your server, allows the creation and management (in y
 
 * Install dependencies:
     ```
-    npm install
+    yarn
     ```
 
 * Make application executable:
@@ -110,7 +110,7 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
 * Tell Telegram our webhook url for a main bot:
     ```
     POST https://<YOURDOMAIN>/api/v1.0/webhook-set
- 
+
     {
         "tgBotUsername": "<TELEGRAM_MAIN_BOT_USERNAME>"
     }
@@ -119,7 +119,7 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
 * Create sub-bot (the response will contain its unique `subbotIdentifier`):
     ```
     POST https://<YOURDOMAIN>/api/v1.0/subbot
- 
+
     {
         "tgBotUsername": "<TELEGRAM_MAIN_BOT_USERNAME>",
         "description": "Some description for the new sub-bot"
@@ -129,7 +129,7 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
 * Send message to all Telegram subscribers of a sub-bot:
     ```
     POST https://<YOURDOMAIN>/api/v1.0/outgoing
- 
+
     {
         "tgBotUsername": "<TELEGRAM_MAIN_BOT_USERNAME>",
         "subbotIdentifier": "<SUBBOT_IDENTIFIER>",
@@ -140,7 +140,7 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
 * Delete sub-bot:
     ```
     DELETE https://<YOURDOMAIN>/api/v1.0/subbot
- 
+
     {
         "tgBotUsername": "<TELEGRAM_MAIN_BOT_USERNAME>",
         "subbotIdentifier": "<SUBBOT_IDENTIFIER>"
