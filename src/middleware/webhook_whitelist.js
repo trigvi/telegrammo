@@ -1,6 +1,6 @@
 
-const minilogger  = require("../../minilogger");
-const settings    = require("../../../mysettings.json");
+const minilogger  = require("../minilogger");
+const settings    = require("../../mysettings.json");
 
 
 /**

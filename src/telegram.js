@@ -9,7 +9,7 @@ const settings    = require("../mysettings.json");
 
 /**
  * Send Telegram message from main Telegram bot to user
- * 
+ *
  * @param {string}      [tgBotUsername]
  * @param {integer}     [tgChatId]
  * @param {string}      [text]
@@ -59,7 +59,7 @@ async function sendMessageNative(tgBotUsername, tgChatId, text, parseMode="HTML"
             minilogger.print(`ERROR // ${moduleName} // ${functionName} // tgChatId ${tgChatId} // ${response}`);
             return;
         }
-        
+
     } catch (err) {
 
         minilogger.print(`ERROR // ${moduleName} // ${functionName} // ${err.message}`);
@@ -71,7 +71,7 @@ async function sendMessageNative(tgBotUsername, tgChatId, text, parseMode="HTML"
 
 /**
  * Send Telegram text message from Subbot to Subscription's chat/user
- * 
+ *
  * @param {Subbot}          [subbot]
  * @param {Subscription}    [subscription]
  * @param {string}          [text]
@@ -141,7 +141,7 @@ async function sendMessage(subbot, subscription, text, parseMode="HTML") {
 
 /**
  * Send Telegram photo message from Subbot to Subscription's chat/user
- * 
+ *
  * @param {Subbot}          [subbot]
  * @param {Subscription}    [subscription]
  * @param {string}          [photoUrl]
@@ -209,7 +209,7 @@ async function sendPhotoByUrl(subbot, subscription, photoUrl) {
 
 /**
  * Tell Telegram our bot's webhook url on this API
- * 
+ *
  * @param {string}      [tgBotUsername]
  */
 async function setWebhook(tgBotUsername) {
@@ -282,7 +282,7 @@ async function setWebhook(tgBotUsername) {
 
 /**
  * Is chat not found error
- * 
+ *
  * @param {string}      [telegramErrorDescription]
  */
 function isChatNotFound(telegramErrorDescription) {
@@ -310,12 +310,13 @@ function isChatNotFound(telegramErrorDescription) {
 
 /**
  * Delete Subscription if chat not found
- * 
- * Chat not found  can happen when a user closes the chat or stops the
+ *
+ * Chat not found can happen when a user closes the chat or stops the
  * bot without first using the /unsubscribe command. Next time we send
  * him a message, Telegram API sends back an error. So we delete the
- * Subscription on our side.
- * 
+ * Subscription on our side to prevent sending more messages to a
+ * dead chat.
+ *
  * @param {Subbot}          [subbot]
  * @param {Subscription}    [subscription]
  */

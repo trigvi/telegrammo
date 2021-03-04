@@ -1,10 +1,10 @@
 
 const path            = require("path");
 
-const db              = require("../../db");
-const minilogger      = require("../../minilogger");
-const randomString    = require("../../random_string");
-const settings        = require("../../../mysettings.json");
+const db              = require("../db");
+const minilogger      = require("../minilogger");
+const randomString    = require("../random_string");
+const settings        = require("../../mysettings.json");
 
 
 /**

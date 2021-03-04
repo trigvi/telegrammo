@@ -1,9 +1,9 @@
 
 const path        = require("path");
 
-const db          = require("../../db");
-const minilogger  = require("../../minilogger");
-const telegram    = require("../../telegram");
+const db          = require("../db");
+const minilogger  = require("../minilogger");
+const telegram    = require("../telegram");
 
 
 /**

@@ -1,17 +1,18 @@
 
-const bodyParser          = require("body-parser");
-const cors                = require("cors")
-const express             = require("express");
+const bodyParser            = require("body-parser");
+const cors                  = require("cors")
+const express               = require("express");
+const fs                    = require('fs');
 
-const backgroundWorkers   = require("./lib/background-workers");
-const cOutgoing           = require("./lib/api/controllers/outgoing");
-const cSubbot             = require("./lib/api/controllers/subbot");
-const cWebhook            = require("./lib/api/controllers/webhook");
-const db                  = require("./lib/db");
-const minilogger          = require("./lib/minilogger");
-const mAuthentication     = require("./lib/api/middleware/authentication");
-const mWebhookWhitelist   = require("./lib/api/middleware/webhook_whitelist");
-const settings            = require("./mysettings.json");
+const background            = require("./src/background");
+const rOutgoing             = require("./src/route/outgoing");
+const rSubbot               = require("./src/route/subbot");
+const rWebhook              = require("./src/route/webhook");
+const db                    = require("./src/db");
+const minilogger            = require("./src/minilogger");
+const mAuthentication       = require("./src/middleware/authentication");
+const mWebhookWhitelist     = require("./src/middleware/webhook_whitelist");
+const settings              = require("./mysettings.json");
 
 
 // Args: --port
@@ -45,39 +46,40 @@ async function start() {
     // Sync db, start background workers
     minilogger.print(``);
     await db.sync();
-    await backgroundWorkers.run();
+    await background.run();
 
 
-    // API: start
-    let api = express();
-    api.listen(port, () => {
+    // Web server: start
+    let webserver = express();
+    webserver.listen(port, () => {
         minilogger.print(`API started on port ${port}`);
     });
 
 
     // API: middleware
-    api.use(cors());
-    api.use(bodyParser.json());
+    webserver.use(cors());
+    webserver.use(bodyParser.json());
 
-
-    // API: router middleware
-    let router = express.Router();
-    router.use(mWebhookWhitelist.fn);
+    let apiRoutes = express.Router();
+    let normalRoutes = express.Router();
+    apiRoutes.use(mWebhookWhitelist.fn);
 
     if (authenticationRequired) {
-        router.use(mAuthentication.fn);
+        apiRoutes.use(mAuthentication.fn);
+        normalRoutes.use(mAuthentication.fn);
     }
 
+    webserver.use(settings["api"]["base_uri"], apiRoutes);
+    webserver.use("", normalRoutes);
 
-    // API: router
-    api.use(settings["api"]["base_uri"], router);
+    apiRoutes.get       ("/",                          (req, res, next) => { res.json({"msg":"Hello"}); });
+    apiRoutes.post      ("/outgoing",                  rOutgoing.post);
+    apiRoutes.get       ("/subbot",                    rSubbot.getList);
+    apiRoutes.post      ("/subbot",                    rSubbot.post);
+    apiRoutes.delete    ("/subbot",                    rSubbot.del);
+    apiRoutes.post      ("/webhook-set",               rWebhook.postWebhookSet);
+    apiRoutes.post      ("/webhook/:tgBotUsername",    rWebhook.postWebhook);
 
-    router.get       ("/",                          (req, res, next) => { res.json({"msg":"Hello"}); });
-    router.post      ("/outgoing",                  cOutgoing.post);
-    router.get       ("/subbot",                    cSubbot.getList);
-    router.post      ("/subbot",                    cSubbot.post);
-    router.delete    ("/subbot",                    cSubbot.del);
-    router.post      ("/webhook-set",               cWebhook.postWebhookSet);
-    router.post      ("/webhook/:tgBotUsername",    cWebhook.postWebhook);
+    normalRoutes.get    ("/manual",                     (req, res, next) => { res.sendFile(`${__dirname}/src/manual.html`); });
 
 }

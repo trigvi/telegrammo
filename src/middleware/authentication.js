@@ -1,6 +1,6 @@
 
-const minilogger  = require("../../minilogger");
-const settings    = require("../../../mysettings.json");
+const minilogger  = require("../minilogger");
+const settings    = require("../../mysettings.json");
 
 
 /**
@@ -16,8 +16,10 @@ function fn(req, res, next) {
         return;
     }
 
-    // If valid token received, all good
-    let token = req.headers["access-token"];
+    // Valid token must be provided either through request header or querystring
+    let headerToken = req.headers["access-token"];
+    let queryToken = req.query.accessToken;
+    const token = headerToken || queryToken || null;
     if (token && settings["api"]["tokens"].indexOf(token) != -1) {
         next();
         return;

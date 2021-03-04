@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <title>Telegrammo - Manually Hit Endpoints</title>
+
+    <style>
+
+        *, *:before, *:after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            letter-spacing: 1px;
+        }
+
+        *::placeholder {
+            color: #bbb;
+            font-weight: normal;
+        }
+
+        html {
+            font-size: 11pt;
+        }
+
+        .Block {
+            margin-bottom: 5px;
+            padding: 10% 20%;
+            background: #eee;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        input {
+            font-weight: bold;
+        }
+
+        textarea {
+            height: 200px;
+        }
+
+        button {
+            background: #333;
+            color: #eee;
+            font-size: 1.1rem;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <!-- d: POST set webhook -->
+    <div class="Block">
+        <div><input id="e_tgBotUsername" type="text" placeholder="tgBotUsername" value="" /></div>
+        <div><button onclick="e_setWebhook()">POST /webhook-set</button></div>
+        <div><textarea id="e_response">Response will appear here...</textarea></div>
+    </div>
+
+    <!-- d: GET subbot -->
+    <div class="Block">
+        <div><button onclick="d_getSubbot()">GET /subbot (all subbots)</button></div>
+        <div><textarea id="d_response">Response will appear here...</textarea></div>
+    </div>
+
+    <!-- a: POST subbot -->
+    <div class="Block">
+        <div><input id="a_tgBotUsername" type="text" placeholder="tgBotUsername" value="" /></div>
+        <div><input id="a_subbotIdentifier" type="text" placeholder="subbotIdentifier (optional)" value="" /></div>
+        <div><input id="a_description" type="text" placeholder="description" /></div>
+        <div><button onclick="a_postSubbot()">POST /subbot</button></div>
+        <div><textarea id="a_response">Response will appear here...</textarea></div>
+    </div>
+
+    <!-- c: DELETE subbot -->
+    <div class="Block">
+        <div><input id="c_tgBotUsername" type="text" placeholder="tgBotUsername" value="" /></div>
+        <div><input id="c_subbotIdentifier" type="text" placeholder="subbotIdentifier" /></div>
+        <div><button onclick="c_deleteSubbot()">DELETE /subbot</button></div>
+        <div><textarea id="c_response">Response will appear here...</textarea></div>
+    </div>
+
+    <!-- b: POST outgoing -->
+    <div class="Block">
+        <div><input id="b_tgBotUsername" type="text" placeholder="tgBotUsername" value="" /></div>
+        <div><input id="b_subbotIdentifier" type="text" placeholder="subbotIdentifier" value="" /></div>
+        <div><input id="b_text" type="text" placeholder="text" /></div>
+        <div><input id="b_photoUrl" type="text" placeholder="photoUrl" /></div>
+        <div><button onclick="b_postOutgoing()">POST /outgoing</button></div>
+        <div><textarea id="b_response">Response will appear here...</textarea></div>
+    </div>
+
+    <script>
+
+        const params = new URLSearchParams(window.location.search);
+        const accessToken = params.get('accessToken');
+
+        function makeRequest(method, url, contentType, requestBody, responseOutputElement) {
+
+            let xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
+            xhr.setRequestHeader("Access-Token", accessToken);
+            xhr.setRequestHeader("Content-Type", contentType);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    responseOutputElement.innerHTML = `RESPONSE HTTP: ${xhr.status}`
+                                            + `\nBODY: ` + JSON.stringify(JSON.parse(xhr.responseText), null, 4);
+                }
+            };
+
+            if (requestBody) {
+                xhr.send(JSON.stringify(requestBody));
+            } else {
+                xhr.send();
+            }
+
+        }
+
+        function a_postSubbot() {
+
+            requestBody = {
+                tgBotUsername: document.querySelector('#a_tgBotUsername').value,
+                subbotIdentifier: document.querySelector('#a_subbotIdentifier').value,
+                description: document.querySelector('#a_description').value,
+            };
+
+            makeRequest("POST", "/api/v1.0/subbot", "application/json", requestBody, document.querySelector('#a_response'));
+
+        }
+
+        function b_postOutgoing() {
+
+            requestBody = {
+                tgBotUsername: document.querySelector('#b_tgBotUsername').value,
+                subbotIdentifier: document.querySelector('#b_subbotIdentifier').value,
+                text: document.querySelector('#b_text').value,
+                photoUrl: document.querySelector('#b_photoUrl').value,
+            };
+
+            makeRequest("POST", "/api/v1.0/outgoing", "application/json", requestBody, document.querySelector('#b_response'));
+
+        }
+
+        function c_deleteSubbot() {
+
+            requestBody = {
+                tgBotUsername: document.querySelector('#c_tgBotUsername').value,
+                subbotIdentifier: document.querySelector('#c_subbotIdentifier').value,
+            };
+
+            makeRequest("DELETE", "/api/v1.0/subbot", "application/json", requestBody, document.querySelector('#c_response'));
+
+        }
+
+        function d_getSubbot() {
+
+            makeRequest("GET", "/api/v1.0/subbot", "application/json", null, document.querySelector('#d_response'));
+
+        }
+
+        function e_setWebhook() {
+
+            requestBody = {
+                tgBotUsername: document.querySelector('#e_tgBotUsername').value,
+            };
+
+            makeRequest("POST", "/api/v1.0/webhook-set", "application/json", requestBody, document.querySelector('#e_response'));
+
+        }
+
+    </script>
+
+</body>
+</html>
