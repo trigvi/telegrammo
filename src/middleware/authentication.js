@@ -9,11 +9,10 @@ const settings    = require("../../mysettings.json");
  */
 function fn(req, res, next) {
 
-    // Token authentication not needed for /webhook requests,
-    // as they come directly from Telegram
-    if (req.url.toString().startsWith("/webhook")) {
-        next();
-        return;
+    // Token not needed for certain urls
+    // (webhook is hit directly by Telegram and they don't know our access tokens...)
+    if (req.url.toString().startsWith("/webhook") || req.url.indexOf('favicon.ico') != -1) {
+        return next();
     }
 
     // Valid token must be provided either through request header or querystring
@@ -21,8 +20,7 @@ function fn(req, res, next) {
     let queryToken = req.query.accessToken;
     const token = headerToken || queryToken || null;
     if (token && settings["api"]["tokens"].indexOf(token) != -1) {
-        next();
-        return;
+        return next();
     }
 
     // Token not received or invalid. Return error response.

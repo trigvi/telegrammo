@@ -107,7 +107,12 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
 
 # Endpoints
 
-* Tell Telegram our webhook url for a main bot:
+Please note that you can test all the following endpoints manually with your browser by visiting:
+    ```
+    https://<YOURDOMAIN>/manually?accessToken=<TOKEN>
+    ```
+
+* Tells Telegram our webhook url for a main bot:
     ```
     POST https://<YOURDOMAIN>/api/v1.0/webhook-set
 
@@ -116,7 +121,7 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
     }
     ```
 
-* Create sub-bot (the response will contain its unique `subbotIdentifier`):
+* Creates sub-bot (the response will contain its unique `subbotIdentifier`):
     ```
     POST https://<YOURDOMAIN>/api/v1.0/subbot
 
@@ -126,7 +131,7 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
     }
     ```
 
-* Send message to all Telegram subscribers of a sub-bot:
+* Sends message to all Telegram subscribers of a sub-bot:
     ```
     POST https://<YOURDOMAIN>/api/v1.0/outgoing
 
@@ -137,7 +142,7 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
     }
     ```
 
-* Delete sub-bot:
+* Deletes sub-bot:
     ```
     DELETE https://<YOURDOMAIN>/api/v1.0/subbot
 
@@ -152,12 +157,9 @@ To do so, send a POST request to this API's `/webhook-set` endpoint as shown bel
 
 # Security
 
-* Every request made to this API must include the following header.
-    ```
-    Access-Token: <TOKEN>
-    ```
+* Every request made to this API must send a valid token either through HTTP header `Access-Token` or query string `accessToken`.
 
-* You can define tokens in `mysettings.json`.
+* You can define valid tokens in `mysettings.json`.
 
 &nbsp;
 &nbsp;

@@ -80,6 +80,6 @@ async function start() {
     apiRoutes.post      ("/webhook-set",               rWebhook.postWebhookSet);
     apiRoutes.post      ("/webhook/:tgBotUsername",    rWebhook.postWebhook);
 
-    normalRoutes.get    ("/manual",                     (req, res, next) => { res.sendFile(`${__dirname}/src/manual.html`); });
+    normalRoutes.get    ("/manually",                  (req, res, next) => { res.sendFile(`${__dirname}/src/manually.html`); });
 
 }
